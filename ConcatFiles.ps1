@@ -27,6 +27,8 @@ function Main
 {
     Start-Transcript -Path "${basePath}\${releaseVersion}_Log_$([DateTime]::Now.ToString('yyyy.MM.dd.HH.mm.ss')).txt"
     
+    $targetFolder = Read-Host 'Please input path of sandbox location...'
+
     $title = "Select options..."
     $message = "Choose what you need"
 
@@ -36,7 +38,7 @@ function Main
         "Exit"
 
     $menu1 = New-Object System.Management.Automation.Host.ChoiceDescription "&1. List files", `
-        "List files under current folder and open in notepad"
+        "List files under sandbox location in targetFiles.csv and open from notepad"
 
     $menu2 = New-Object System.Management.Automation.Host.ChoiceDescription "&2. Concat files", `
         "Concat files in order you have chosen in previous step"
@@ -54,6 +56,7 @@ function Main
             {
                 0 {break OuterLoop}
     			1 {
+					 List-Files
     			  }
     			2 {
     			  }
@@ -62,6 +65,11 @@ function Main
     while (1)
     	
     Stop-Transcript
+}
+
+function List-Files()
+{
+	Get-ChildItem -Path $targetFolder -Recurse | Where-Object {$_.Extension -eq ".dsql"} | Select-Object -Property FullName | ConvertTo-Csv -NoTypeInformation | Select-Object -Skip 1 | Set-Content -Path "$basePath\targetFiles.csv"
 }
 
 Main
