@@ -56,9 +56,10 @@ function Main
             {
                 0 {break OuterLoop}
     			1 {
-					 List-Files
+					List-Files
     			  }
     			2 {
+					Concat-Files
     			  }
             }
     }
@@ -69,7 +70,21 @@ function Main
 
 function List-Files()
 {
-	Get-ChildItem -Path $targetFolder -Recurse | Where-Object {$_.Extension -eq ".dsql"} | Select-Object -Property FullName | ConvertTo-Csv -NoTypeInformation | Select-Object -Skip 1 | Set-Content -Path "$basePath\targetFiles.csv"
+	# Write in .csv file
+	$csvFile = "$basePath\targetFiles.csv"
+	Get-ChildItem -Path $targetFolder -Recurse | Where-Object {$_.Extension -eq ".dsql"} | Select-Object -Property FullName | ConvertTo-Csv -NoTypeInformation | Select-Object -Skip 1 | Set-Content -Path $csvFile
+	# Open from notepad
+	Notepad $csvFile
+}
+
+function Concat-Files()
+{
+    $csvFile = "$basePath\targetFiles.csv"
+    $content = Get-Content $csvFile | ForEach-Object { $_ -replace '"' }
+    foreach ($line in $content)
+    {
+        Get-Content $line | Add-Content -Path $basePath\merged.dsql
+    }
 }
 
 Main
