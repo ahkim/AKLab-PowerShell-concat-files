@@ -74,7 +74,7 @@ function List-Files()
 	$csvFile = "$basePath\targetFiles.csv"
 	Get-ChildItem -Path $targetFolder -Recurse | Where-Object {$_.Extension -eq ".dsql"} | Select-Object -Property FullName | ConvertTo-Csv -NoTypeInformation | Select-Object -Skip 1 | Set-Content -Path $csvFile
 	# Open from notepad
-	Notepad $csvFile
+	Notepad $csvFile 
 }
 
 function Concat-Files()
