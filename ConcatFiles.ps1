@@ -29,6 +29,8 @@ function Main
     
     $targetFolder = Read-Host 'Please input path of sandbox location...'
 
+	$filterTarget = Read-Host "Please input target file extension to filter and merge... E.g. dsql"
+
     $title = "Select options..."
     $message = "Choose what you need"
 
@@ -72,19 +74,24 @@ function List-Files()
 {
 	# Write in .csv file
 	$csvFile = "$basePath\targetFiles.csv"
-	Get-ChildItem -Path $targetFolder -Recurse | Where-Object {$_.Extension -eq ".dsql"} | Select-Object -Property FullName | ConvertTo-Csv -NoTypeInformation | Select-Object -Skip 1 | Set-Content -Path $csvFile
+	Get-ChildItem -Path $targetFolder -Recurse | Where-Object {$_.Extension -eq ".$filterTarget"} | Select-Object -Property FullName | ConvertTo-Csv -NoTypeInformation | Select-Object -Skip 1 | Set-Content -Path $csvFile
 	# Open from notepad
 	Notepad $csvFile 
 }
 
 function Concat-Files()
 {
+    # remove previously merged file
+    Remove-Item -Path $basePath\merged.$filterTarget -ErrorAction SilentlyContinue
+
     $csvFile = "$basePath\targetFiles.csv"
     $content = Get-Content $csvFile | ForEach-Object { $_ -replace '"' }
     foreach ($line in $content)
     {
-        Get-Content $line | Add-Content -Path $basePath\merged.dsql
+        Get-Content $line | Add-Content -Path $basePath\merged.$filterTarget
     }
+    # remove .csv file
+    Remove-Item -Path $csvFile -ErrorAction SilentlyContinue
 }
 
 Main
