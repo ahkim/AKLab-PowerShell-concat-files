@@ -11,6 +11,7 @@ This utility is initially created to cater concat sql dw query files(.dsql) in d
 When you run the script, you are supposed to input following two. 
 
 "Please input path of sandbox location..."
+
 "Please input target file extension to filter and merge... E.g. dsql"
 
 Sandbox location is where you want to search the file to merge. Target file extension is to specify what type of file you want to merge. The rest of steps will be selectable from the menu. 
