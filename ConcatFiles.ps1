@@ -27,16 +27,22 @@ function Main
 {
     Start-Transcript -Path "${basePath}\${releaseVersion}_Log_$([DateTime]::Now.ToString('yyyy.MM.dd.HH.mm.ss')).txt"
     
-    $targetFolder = Read-Host 'Please input path of sandbox location...'
+    Write-Host 'Please choose the path of sandbox location..'
+    
+    Add-Type -AssemblyName System.Windows.Forms
+    $folderBrowser = New-Object System.Windows.Forms.FolderBrowserDialog
+    [void]$folderBrowser.ShowDialog()
 
-	$filterTarget = Read-Host "Please input target file extension to filter and merge... E.g. dsql"
+    $targetFolder = $folderBrowser.SelectedPath
+
+    $filterTarget = Read-Host "Please input target file extension to filter and merge... E.g. dsql"
 
     $title = "Select options..."
     $message = "Choose what you need"
 
     #region MenuCreation
 
-	$menu0 = New-Object System.Management.Automation.Host.ChoiceDescription "&0. Exit", `
+    $menu0 = New-Object System.Management.Automation.Host.ChoiceDescription "&0. Exit", `
         "Exit"
 
     $menu1 = New-Object System.Management.Automation.Host.ChoiceDescription "&1. List files", `
